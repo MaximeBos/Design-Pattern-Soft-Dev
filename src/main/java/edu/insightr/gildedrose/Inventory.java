@@ -31,57 +31,84 @@ public class Inventory {
         System.out.println("\n");
     }
 
-    public void updateQuality() {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].getName() != "Aged Brie"
-                    && items[i].getName() != "Backstage passes to a TAFKAL80ETC concert") {
-                if (items[i].getQuality() > 0) {
-                    if (items[i].getName() != "Sulfuras, Hand of Ragnaros") {
-                        items[i].setQuality(items[i].getQuality() - 1);
-                    }
+    public void updateQuality()
+    {
+        for (Item item : items)
+        {
+            if ("Sulfuras, Hand of Ragnaros".equals(item.getName()))
+            {
+                continue;
+            }
+            if("Aged Brie".equals(item.getName()))
+            {
+                item.setSellIn(item.getSellIn() - 1);
+                addQuality(item);
+
+                if (item.getSellIn() < 0)
+                {
+                    addQuality(item);
                 }
-            } else {
-                if (items[i].getQuality() < 50) {
-                    items[i].setQuality(items[i].getQuality() + 1);
+            }
 
-                    if (items[i].getName() == "Backstage passes to a TAFKAL80ETC concert") {
-                        if (items[i].getSellIn() < 11) {
-                            if (items[i].getQuality() < 50) {
-                                items[i].setQuality(items[i].getQuality() + 1);
-                            }
-                        }
+            else if ("Backstage passes to a TAFKAL80ETC concert".equals(item.getName()))
+            {
+                item.setSellIn(item.getSellIn() - 1);
+                addQuality(item);
 
-                        if (items[i].getSellIn() < 6) {
-                            if (items[i].getQuality() < 50) {
-                                items[i].setQuality(items[i].getQuality() + 1);
-                            }
-                        }
+                if ("Backstage passes to a TAFKAL80ETC concert".equals(item.getName()))
+                {
+                    if (item.getSellIn() < 10)
+                    {
+                        addQuality(item);
+                    }
+
+                    if (item.getSellIn() < 5)
+                    {
+                        addQuality(item);
+                    }
+
+                    if (item.getSellIn() < 0)
+                    {
+                        item.setQuality(0);
                     }
                 }
             }
 
-            if (items[i].getName() != "Sulfuras, Hand of Ragnaros") {
-                items[i].setSellIn(items[i].getSellIn() - 1);
+            else if (item.getName().matches(".*Conjured.*"))
+            {
+                item.setSellIn(item.getSellIn() - 1);
+                doubleLowerQuality(item);
             }
 
-            if (items[i].getSellIn() < 0) {
-                if (items[i].getName() != "Aged Brie") {
-                    if (items[i].getName() != "Backstage passes to a TAFKAL80ETC concert") {
-                        if (items[i].getQuality() > 0) {
-                            if (items[i].getName() != "Sulfuras, Hand of Ragnaros") {
-                                items[i].setQuality(items[i].getQuality() - 1);
-                            }
-                        }
-                    } else {
-                        items[i].setQuality(items[i].getQuality() - items[i].getQuality());
-                    }
-                } else {
-                    if (items[i].getQuality() < 50) {
-                        items[i].setQuality(items[i].getQuality() + 1);
-                    }
+            else
+            {
+                item.setSellIn(item.getSellIn() - 1);
+                lowerQuality(item);
+
+                if (item.getSellIn() < 0)
+                {
+                    lowerQuality(item);
                 }
             }
         }
+    }
+
+    protected void addQuality(Item item) {
+        if (item.getQuality() < 50) {
+            item.setQuality(item.getQuality() + 1);
+        }
+    }
+
+    protected void lowerQuality(Item item) {
+        if (item.getQuality() > 0)
+        {
+            item.setQuality(item.getQuality() - 1);
+        }
+    }
+
+    protected void doubleLowerQuality(Item item) {
+        lowerQuality(item);
+        lowerQuality(item);
     }
 
     public static void main(String[] args) {
@@ -92,3 +119,9 @@ public class Inventory {
         }
     }
 }
+
+
+    //1- Add to github and add a TAG
+    //2- Create a branch named "visitor"
+    //3- use the visitor patter
+
